@@ -33,7 +33,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-wrapper-
 
       - name: Build the JAR
-        run: ./gradlew build
+        run: ./gradlew shadowJar
 
       - name: Publish the JAR to GitHub Packages
         run: ./gradlew publish
