@@ -5,6 +5,7 @@ plugins {
     java
     kotlin("jvm") version "1.3.72"
     id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("org.ajoberstar.reckon") version "0.13.0"
 }
 
 group = "com.github.dmwgroup"
@@ -33,6 +34,11 @@ dependencies {
     testImplementation("org.amshove.kluent:kluent:1.61")
     testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek_version")
     testRuntimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
+}
+
+reckon {
+    scopeFromProp()
+    stageFromProp("final", "hotfix")
 }
 
 configure<JavaPluginConvention> {
