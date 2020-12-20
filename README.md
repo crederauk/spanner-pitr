@@ -1,4 +1,11 @@
-## Cloud Spanner Point in Time Recovery Utility
+# Spanner PITR
+
+Provides [Point In Time Recovery (PITR)](https://en.wikipedia.org/wiki/Point-in-time_recovery) for Google Cloud Spanner.
+
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dmwgroup/spanner-pitr/Build)
+![GitHub](https://img.shields.io/github/license/dmwgroup/spanner-pitr)
+
+## Description
 The objective of this utility is to allow Cloud Spanner users to make use of stale reads and timestamp
 bounds to implement point in time recovery in the event of data loss or corruption. It supports recovering from
 both DML changes (`INSERT`, `UPDATE` and `DELETE`) as well as DDL `DROP TABLE` statements.
