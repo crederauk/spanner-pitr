@@ -1,4 +1,4 @@
-name: "Build & test"
+name: Build
 
 on:
   push:
@@ -25,5 +25,5 @@ jobs:
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-wrapper-
 
-      - name: Run all tests and other checks
-        run: ./gradlew check
+      - name: Build JAR
+        run: ./gradlew shadowJar
