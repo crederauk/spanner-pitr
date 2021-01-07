@@ -1,4 +1,11 @@
-## Cloud Spanner Point in Time Recovery Utility
+# Spanner PITR
+
+Provides [Point In Time Recovery (PITR)](https://en.wikipedia.org/wiki/Point-in-time_recovery) for Google Cloud Spanner.
+
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dmwgroup/spanner-pitr/Build)
+![GitHub](https://img.shields.io/github/license/dmwgroup/spanner-pitr)
+
+## Description
 The objective of this utility is to allow Cloud Spanner users to make use of stale reads and timestamp
 bounds to implement point in time recovery in the event of data loss or corruption. It supports recovering from
 both DML changes (`INSERT`, `UPDATE` and `DELETE`) as well as DDL `DROP TABLE` statements.
@@ -41,7 +48,7 @@ This approach can be used in the event of data corruption (if records have been 
 prevent errors in timestamp detection, it is necessary that the query returns `true` for every time period from the
 `start` through to the point at which the data is corrupted and false from that point until the `end` timestamp.
 
-## Running tests
+## Building & testing
 Tests can be executed locally using Gradle, but require a remote Spanner instance to be available (since the emulator
 does not yet support this functionality). Prior to running the tests, ensure that the
 following environment variables have been set:
@@ -51,25 +58,8 @@ export SPANNER_INSTANCE=test-instance;
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json;
 export SPANNER_DATABASE=test-db;
 export SPANNER_PROJECT=test-project;
-./gradlew test
+./gradlew build
 ```
-
-## Additional Enhancements
-Some additional enhancements would be possible with the addition of Cloud Spanner features, including:
-* Automatically starting the creation of a managed backup at the specified point in time; *and*
-* Automatically launching a DataFlow pipeline to back up table data in parallel to GCS (rather than running locally)
-
-## GCP Product Requests
-* A Dataflow template which exports to GCS from Spanner query at a point in time:
-  * https://cloud.google.com/dataflow/docs/guides/templates/provided-batch#cloudspannertogcstext
-* Enhancing the managed backup API with a writeable `createTime` parameter, to allow a consistent
-  backup to take place at any time in the past (within the GC window):
-  * https://cloud.google.com/spanner/docs/reference/rest/v1/projects.instances.backups#Backup
-* Allowing read timestamps to be used with the JDBC driver as specified in SQL:2001 (and supported by CockroachDB):
-  * https://en.wikipedia.org/wiki/SQL:2011#Temporal_support
-  * `SELECT * FROM table AS OF SYSTEM TIME '2020-01-02 12:34:56'`
-  * This would permit trivial point-in-time restoration: `INSERT INTO new_table (SELECT * FROM old_table AS OF SYSTEM TIME '10 minutes ago')`
-* Incremental backup support (including revision history)
 
 ## Further Reading
 * http://www.googlecloudspanner.com/2018/01/data-definition-language-ddl-with.html
@@ -82,3 +72,13 @@ Some additional enhancements would be possible with the addition of Cloud Spanne
 * https://cloud.google.com/spanner/docs/reads#read_data_in_parallel
 * https://www.cockroachlabs.com/blog/time-travel-queries-select-witty_subtitle-the_future/
 * https://www.nextplatform.com/2019/01/15/spanning-the-database-world-with-google/
+
+
+## Contributing
+Contributions are welcome. Please read our [Code of Conduct](CODE_OF_CONDUCT.md) first, then feel free to raise issues and pull requests as appropriate.
+
+## License
+Apache-2.0
+
+## Contact
+For any queries, please email [opensource@dmwgroup.co.uk](mailto:opensource@dmwgroup.co.uk).

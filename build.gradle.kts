@@ -5,6 +5,7 @@ plugins {
     java
     kotlin("jvm") version "1.3.72"
     id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("org.ajoberstar.reckon") version "0.13.0"
 }
 
 group = "com.github.dmwgroup"
@@ -18,8 +19,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     testImplementation("junit", "junit", "4.12")
-    implementation("com.google.cloud:google-cloud-spanner:1.54.0")
-    implementation("com.google.cloud:google-cloud-spanner-jdbc:1.15.0")
+    implementation("com.google.cloud:google-cloud-spanner:3.1.2")
+    implementation("com.google.cloud:google-cloud-spanner-jdbc:1.18.2")
     implementation("com.github.ajalt:clikt:2.7.0")
     implementation("io.github.microutils:kotlin-logging:1.7.9")
     implementation("org.slf4j:slf4j-simple:1.7.29")
@@ -33,6 +34,11 @@ dependencies {
     testImplementation("org.amshove.kluent:kluent:1.61")
     testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek_version")
     testRuntimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
+}
+
+reckon {
+    scopeFromProp()
+    stageFromProp("final", "hotfix")
 }
 
 configure<JavaPluginConvention> {
