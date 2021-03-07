@@ -19,8 +19,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     testImplementation("junit", "junit", "4.12")
-    implementation("com.google.cloud:google-cloud-spanner:3.1.2")
-    implementation("com.google.cloud:google-cloud-spanner-jdbc:1.18.2")
+    implementation("com.google.cloud:google-cloud-spanner:5.0.0")
+    implementation("com.google.cloud:google-cloud-spanner-jdbc:1.20.1")
     implementation("com.github.ajalt:clikt:2.7.0")
     implementation("io.github.microutils:kotlin-logging:1.7.9")
     implementation("org.slf4j:slf4j-simple:1.7.29")

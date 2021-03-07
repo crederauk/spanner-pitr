@@ -7,6 +7,7 @@
 
 package com.dmwgroup.spanner.pitr
 
+import com.google.cloud.spanner.DatabaseInfo
 import com.google.cloud.spanner.Statement
 import com.google.cloud.spanner.TimestampBound
 import com.google.cloud.spanner.TransactionRunner.TransactionCallable
@@ -145,6 +146,16 @@ object SpannerPITRTest : Spek({
             }
         }
 
+        test("confirm database status and last version time availability") {
+            // Get the earliest version time of the database
+            val db = spannerAdminClient(project).getDatabase(instance, database)
+            db.state shouldBe DatabaseInfo.State.READY
+            db.earliestVersionTime.toInstant() shouldBeAfter Instant.now().minusSeconds(3601)
+            Duration.between(db.earliestVersionTime.toInstant(), Instant.now()).toHours() shouldBeLessThan (7 * 24)
+            println("Database earliest version time: ${db.earliestVersionTime}")
+            println("Database retention period: ${db.versionRetentionPeriod}")
+        }
+
         test("recover from data deletion", timeout = 60000) {
             val uuid = UUID.randomUUID()
 
@@ -274,7 +285,7 @@ object SpannerPITRTest : Spek({
         }
 
         test("export deleted records to structs", timeout = 60000) {
-            val numRecords = 1000
+            val numRecords = 100
             executeDML(listOf("DELETE FROM $testTableName WHERE true"))
             val targetTimestamp = generateTestRecords(testTableName, numRecords)
             executeDML(listOf("DELETE FROM $testTableName WHERE true"))
@@ -292,7 +303,7 @@ object SpannerPITRTest : Spek({
         }
 
         test("export deleted records to csv file", timeout = 60000) {
-            val numRecords = 1000
+            val numRecords = 100
             executeDML(listOf("DELETE FROM $testTableName WHERE true"))
             val targetTimestamp = generateTestRecords(testTableName, numRecords)
             executeDML(listOf("DELETE FROM $testTableName WHERE true"))
@@ -313,7 +324,6 @@ object SpannerPITRTest : Spek({
                 is Error -> fail(result.error)
             }
         }
-
 
         afterGroup {
             println("Dropping table $testTableName...")

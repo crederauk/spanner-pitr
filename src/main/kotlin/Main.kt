@@ -53,9 +53,8 @@ class QueryCommand : CliktCommand(name = "query") {
     private val query: String by argument("query")
     private val accuracy: Duration by option("--accuracy").convert { Duration.parse(it) }
         .default(Duration.ofMillis(500))
-    private val start: Instant by option("--start")
+    private val start: Instant? by option("--start")
         .convert { Instant.parse(it) }
-        .default(now.minus(1, ChronoUnit.HOURS))
     private val end: Instant by option("--end")
         .convert { Instant.parse(it) }
         .default(now)
@@ -71,7 +70,18 @@ class QueryCommand : CliktCommand(name = "query") {
                 logger.info { "Connected to Spanner." }
                 val (connection, client) = connections.value
 
-                when (val target = SpannerTimelineSearcher(query, start, end, accuracy, client).findClosestTime()) {
+                // Get the earliest version time of the database
+                val database = spannerAdminClient(config.project).getDatabase(config.instance, config.database)
+                logger.info { "Database earliest version time: ${database.earliestVersionTime}" }
+                logger.info { "Database retention period: ${database.versionRetentionPeriod}" }
+
+                when (val target = SpannerTimelineSearcher(
+                    query,
+                    start ?: database.earliestVersionTime.toInstant(),
+                    end,
+                    accuracy,
+                    client
+                ).findClosestTime()) {
                     is Ok -> logger.info { "Found closest timestamp: ${target.value}" }
                     is Error -> logger.error { "Error finding timestamp: ${target.error}" }
                 }
